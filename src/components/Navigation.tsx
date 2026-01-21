@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
-import { Rocket, Menu, X } from "lucide-react";
+import { Rocket, Menu, X, User, LogOut, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Levels", href: "#levels" },
@@ -10,6 +13,8 @@ const navItems = [
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <motion.nav
@@ -20,12 +25,12 @@ export function Navigation() {
       <div className="container px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
               <Rocket className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="font-display font-bold text-lg">CareerPath</span>
-          </a>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
@@ -38,6 +43,38 @@ export function Navigation() {
                 {item.label}
               </a>
             ))}
+            <Link to="/compare" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Compare
+            </Link>
+            <Link to="/quiz" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Quiz
+            </Link>
+          </div>
+
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            {user ? (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')} className="gap-2">
+                  <User className="w-4 h-4" />
+                  Dashboard
+                </Button>
+                <Button variant="outline" size="sm" onClick={signOut} className="gap-2">
+                  <LogOut className="w-4 h-4" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
+                  Sign In
+                </Button>
+                <Button size="sm" onClick={() => navigate('/auth')} className="gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Toggle */}
@@ -67,6 +104,36 @@ export function Navigation() {
                 {item.label}
               </a>
             ))}
+            <Link
+              to="/compare"
+              onClick={() => setIsOpen(false)}
+              className="block py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Compare Levels
+            </Link>
+            <Link
+              to="/quiz"
+              onClick={() => setIsOpen(false)}
+              className="block py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Self Assessment
+            </Link>
+            <div className="pt-4 mt-4 border-t border-border">
+              {user ? (
+                <div className="space-y-2">
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => { navigate('/dashboard'); setIsOpen(false); }}>
+                    Dashboard
+                  </Button>
+                  <Button variant="outline" className="w-full" onClick={() => { signOut(); setIsOpen(false); }}>
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Button className="w-full" onClick={() => { navigate('/auth'); setIsOpen(false); }}>
+                  Sign In / Sign Up
+                </Button>
+              )}
+            </div>
           </motion.div>
         )}
       </div>

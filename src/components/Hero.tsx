@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowDown, Sparkles, Rocket, Target } from "lucide-react";
+import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero-career-ladder.jpg";
 
 export function Hero() {
   const scrollToLevels = () => {
@@ -8,12 +10,16 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-card" />
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 rounded-full blur-3xl" />
+      {/* Hero Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
+      {/* Overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background" />
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/30 rounded-full blur-3xl animate-pulse-glow" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/30 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
       </div>
       
       {/* Grid Pattern */}
@@ -84,17 +90,35 @@ export function Hero() {
             ))}
           </motion.div>
 
-          {/* CTA */}
-          <motion.button
+          {/* CTAs */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            onClick={scrollToLevels}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity glow-primary"
+            className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            Explore Levels
-            <ArrowDown className="w-5 h-5 animate-bounce" />
-          </motion.button>
+            <button
+              onClick={scrollToLevels}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity glow-primary"
+            >
+              Explore Levels
+              <ArrowDown className="w-5 h-5 animate-bounce" />
+            </button>
+            <Link
+              to="/quiz"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full glass border border-white/20 font-semibold hover:bg-white/10 transition-colors"
+            >
+              <Sparkles className="w-5 h-5 text-primary" />
+              Take Assessment
+            </Link>
+            <Link
+              to="/compare"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full glass border border-white/20 font-semibold hover:bg-white/10 transition-colors"
+            >
+              <Target className="w-5 h-5 text-secondary" />
+              Compare Levels
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
 
