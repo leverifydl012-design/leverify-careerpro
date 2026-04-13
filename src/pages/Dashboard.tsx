@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { progressionLevels, skills, careerTracks } from '@/data/careerData';
+import ProgressionTimeline from '@/components/ProgressionTimeline';
 
 interface UserSkill {
   id: string;
@@ -287,12 +288,31 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
+        {/* Progression Timeline / Roadmap */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="glass rounded-3xl p-6 mb-8"
+        >
+          <h2 className="text-xl font-display font-bold mb-6 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            Career Roadmap
+          </h2>
+          <ProgressionTimeline
+            currentLevel={profile?.current_level || 1}
+            targetLevel={profile?.target_level || 2}
+            userSkills={userSkills}
+            totalSkillsPerLevel={skills.length}
+          />
+        </motion.div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Skills Progress */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            transition={{ delay: 0.2 }}
             className="lg:col-span-2 glass rounded-3xl p-6"
           >
             <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
