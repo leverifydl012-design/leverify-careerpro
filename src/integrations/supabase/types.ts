@@ -68,6 +68,41 @@ export type Database = {
         }
         Relationships: []
       }
+      goal_notes: {
+        Row: {
+          content: string
+          created_at: string
+          goal_id: string
+          id: string
+          note_type: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          goal_id: string
+          id?: string
+          note_type?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          goal_id?: string
+          id?: string
+          note_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_notes_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           career_track: string | null
@@ -103,10 +138,12 @@ export type Database = {
       }
       user_goals: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           id: string
           priority: string | null
+          progress: number | null
           status: string
           target_date: string | null
           title: string
@@ -114,10 +151,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
           priority?: string | null
+          progress?: number | null
           status?: string
           target_date?: string | null
           title: string
@@ -125,10 +164,12 @@ export type Database = {
           user_id: string
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
           priority?: string | null
+          progress?: number | null
           status?: string
           target_date?: string | null
           title?: string

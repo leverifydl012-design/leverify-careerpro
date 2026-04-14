@@ -19,6 +19,7 @@ import ProgressionTimeline from '@/components/ProgressionTimeline';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { AICareerCoach } from '@/components/dashboard/AICareerCoach';
 import { GrowthInsights } from '@/components/dashboard/GrowthInsights';
+import { EnhancedGoalsTab } from '@/components/dashboard/EnhancedGoalsTab';
 
 interface UserSkill {
   id: string;
@@ -187,11 +188,7 @@ export default function Dashboard() {
           </motion.div>
         );
       case 'goals':
-        return <GoalsTab 
-          userGoals={userGoals} isAddingGoal={isAddingGoal} setIsAddingGoal={setIsAddingGoal}
-          newGoal={newGoal} setNewGoal={setNewGoal} handleAddGoal={handleAddGoal}
-          handleCompleteGoal={handleCompleteGoal} handleDeleteGoal={handleDeleteGoal}
-        />;
+        return <EnhancedGoalsTab userId={user?.id || ''} coachContext={coachContext} />;
       case 'achievements':
         return <AchievementsTab achievements={achievements} />;
       case 'coach':
