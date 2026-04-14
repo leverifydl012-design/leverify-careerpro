@@ -188,11 +188,7 @@ export default function Dashboard() {
           </motion.div>
         );
       case 'goals':
-        return <GoalsTab 
-          userGoals={userGoals} isAddingGoal={isAddingGoal} setIsAddingGoal={setIsAddingGoal}
-          newGoal={newGoal} setNewGoal={setNewGoal} handleAddGoal={handleAddGoal}
-          handleCompleteGoal={handleCompleteGoal} handleDeleteGoal={handleDeleteGoal}
-        />;
+        return <EnhancedGoalsTab userId={user?.id || ''} coachContext={coachContext} />;
       case 'achievements':
         return <AchievementsTab achievements={achievements} />;
       case 'coach':
