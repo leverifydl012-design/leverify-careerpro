@@ -19,6 +19,7 @@ import ProgressionTimeline from '@/components/ProgressionTimeline';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { AICareerCoach } from '@/components/dashboard/AICareerCoach';
 import { GrowthInsights } from '@/components/dashboard/GrowthInsights';
+import { EnhancedGoalsTab } from '@/components/dashboard/EnhancedGoalsTab';
 
 interface UserSkill {
   id: string;
