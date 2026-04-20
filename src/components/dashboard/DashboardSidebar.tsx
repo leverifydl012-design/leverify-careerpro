@@ -38,7 +38,7 @@ export function DashboardSidebar({ activeTab, onTabChange }: DashboardSidebarPro
       <div className="p-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2 overflow-hidden">
           <img src={logoImg} alt="Leverify" className="h-8 w-auto shrink-0" />
-          {!collapsed && <span className="font-display font-bold text-lg whitespace-nowrap">Leverify CareerPro</span>}
+          {!collapsed && <span className="font-display font-bold text-lg whitespace-nowrap">Career Progression</span>}
         </div>
         <button onClick={() => setCollapsed(!collapsed)} className="w-7 h-7 rounded-lg hover:bg-muted/50 flex items-center justify-center text-muted-foreground shrink-0">
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

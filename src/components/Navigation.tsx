@@ -27,8 +27,8 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <img src={logoImg} alt="Leverify CareerPro" className="h-9 w-auto" />
-            <span className="font-display font-bold text-lg">Leverify CareerPro</span>
+            <img src={logoImg} alt="Career Progression" className="h-9 w-auto" />
+            <span className="font-display font-bold text-lg">Career Progression</span>
           </Link>
 
           {/* Desktop Nav */}

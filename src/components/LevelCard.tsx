@@ -147,7 +147,7 @@ export function LevelCard({ level, index, isSelected, onClick }: LevelCardProps)
             </div>
 
             <div className="mt-4">
-              <h4 className="text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Career Tracks</h4>
+              <h4 className="text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Roles</h4>
               <div className="flex flex-wrap gap-2">
                 {level.availableIn.map((track) => (
                   <span

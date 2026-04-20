@@ -78,10 +78,10 @@ export function Hero() {
             className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-12"
           >
             {[
-              { icon: TrendingUp, value: "6", label: "Career Levels", sub: "Level 1 → Level 6", color: "text-primary" },
-              { icon: Rocket, value: "5", label: "Career Tracks", sub: "IC · Lead · Manager", color: "text-secondary" },
-              { icon: Sparkles, value: "7", label: "Core Skills", sub: "Assessed per level", color: "text-accent" },
-              { icon: Layers, value: "4", label: "Skill Tiers", sub: "Standard → Expert", color: "text-primary" },
+              { icon: TrendingUp, value: "6", label: "Job Levels", sub: "Level 1 → Level 6", color: "text-primary" },
+              { icon: Rocket, value: "4", label: "Roles", sub: "IC · Lead · Manager", color: "text-secondary" },
+              { icon: Sparkles, value: "7", label: "Skills Set", sub: "Assessed per level", color: "text-accent" },
+              { icon: Layers, value: "4", label: "Proficiency Scales", sub: "Standard → Expert", color: "text-primary" },
             ].map((stat, index) => (
               <motion.div
                 key={index}

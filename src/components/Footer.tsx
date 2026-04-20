@@ -8,8 +8,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img src={logoImg} alt="Leverify CareerPro" className="h-9 w-auto" />
-            <span className="font-display font-bold text-lg">Leverify CareerPro</span>
+            <img src={logoImg} alt="Career Progression" className="h-9 w-auto" />
+            <span className="font-display font-bold text-lg">Career Progression</span>
           </div>
 
           {/* Links */}
