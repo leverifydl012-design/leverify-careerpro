@@ -1,4 +1,5 @@
-import { Rocket, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
+import logoImg from "@/assets/logo.png";
 
 export function Footer() {
   return (
@@ -7,10 +8,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Rocket className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display font-bold text-lg">CareerPath</span>
+            <img src={logoImg} alt="Leverify CareerPro" className="h-9 w-auto" />
+            <span className="font-display font-bold text-lg">Leverify CareerPro</span>
           </div>
 
           {/* Links */}

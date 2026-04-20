@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, Circle, ArrowRight, Star, Lock, Zap } from 'lucide-react';
-import { progressionLevels } from '@/data/careerData';
+import { CheckCircle2, Star, Lock, Zap } from 'lucide-react';
+import { progressionLevels, getTrackLevelSkills } from '@/data/careerData';
 
 interface UserSkill {
   id: string;
@@ -14,20 +14,26 @@ interface ProgressionTimelineProps {
   targetLevel: number;
   userSkills: UserSkill[];
   totalSkillsPerLevel: number;
+  careerTrack?: string;
 }
 
 export default function ProgressionTimeline({ 
   currentLevel, 
   targetLevel, 
-  userSkills, 
-  totalSkillsPerLevel 
+  userSkills,
+  careerTrack = 'ic',
 }: ProgressionTimelineProps) {
   const allLevels = progressionLevels;
   
   const getCompletionForLevel = (level: number) => {
-    const completed = userSkills.filter(s => s.level === level && s.status === 'completed').length;
-    const inProgress = userSkills.filter(s => s.level === level && s.status === 'in_progress').length;
-    return { completed, inProgress, total: totalSkillsPerLevel };
+    const required = getTrackLevelSkills(careerTrack, level);
+    const completed = required.filter(req =>
+      userSkills.some(s => s.skill_id === req.skillName && s.level === level && s.status === 'completed')
+    ).length;
+    const inProgress = required.filter(req =>
+      userSkills.some(s => s.skill_id === req.skillName && s.level === level && s.status === 'in_progress')
+    ).length;
+    return { completed, inProgress, total: required.length };
   };
 
   const getLevelStatus = (level: number) => {

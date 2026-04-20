@@ -75,9 +75,9 @@ export function LevelsSection() {
           className="mb-12 max-w-3xl mx-auto"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">Foundation</span>
+            <span className="text-xs text-muted-foreground">Level 1</span>
             <span className="text-xs text-muted-foreground flex items-center gap-1">
-              Strategic Leader <ArrowUpRight className="w-3 h-3" />
+              Level 6 <ArrowUpRight className="w-3 h-3" />
             </span>
           </div>
           <div className="h-2 rounded-full bg-muted/50 overflow-hidden">
@@ -85,7 +85,7 @@ export function LevelsSection() {
               className="h-full rounded-full"
               style={{ background: 'var(--gradient-primary)' }}
               initial={{ width: "0%" }}
-              animate={{ width: `${(selectedLevel / 5) * 100}%` }}
+              animate={{ width: `${(selectedLevel / 6) * 100}%` }}
               transition={{ type: "spring", bounce: 0.1, duration: 0.8 }}
             />
           </div>

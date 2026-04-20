@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
-import { ChevronRight, Users, Briefcase, Award, Crown, Star, ArrowUpRight, Sparkles } from "lucide-react";
+import { ChevronRight, Users, Briefcase, Award, Crown, Star, ArrowUpRight, Sparkles, Trophy } from "lucide-react";
 import { progressionLevels, type ProgressionLevel } from "@/data/careerData";
 
-const levelIcons = [Star, Briefcase, Award, Crown, Users];
+const levelIcons = [Star, Briefcase, Award, Crown, Users, Trophy];
 const levelColors = [
   "from-level-1 to-level-2",
   "from-level-2 to-level-3",
   "from-level-3 to-level-4",
   "from-level-4 to-level-5",
   "from-level-5 to-primary",
+  "from-primary to-secondary",
 ];
 
 const levelHighlights = [
@@ -17,6 +18,7 @@ const levelHighlights = [
   "Mentoring • Advanced capabilities",
   "Leading initiatives • Org impact",
   "Strategy • High-performing teams",
+  "Executive mastery • Organizational leadership",
 ];
 
 interface LevelCardProps {

@@ -1,11 +1,12 @@
 import { 
-  LayoutDashboard, Target, Sparkles, TrendingUp, Trophy,
-  BookOpen, MessageSquare, LogOut, Home, GitCompare, HelpCircle,
-  ChevronLeft, ChevronRight, Flame, BarChart3
+  LayoutDashboard, Target, Sparkles, TrendingUp,
+  MessageSquare, LogOut, Home, GitCompare, HelpCircle,
+  ChevronLeft, ChevronRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import logoImg from "@/assets/logo.png";
 
 interface DashboardSidebarProps {
   activeTab: string;
@@ -16,11 +17,8 @@ const menuItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, description: "Your career snapshot" },
   { id: "skills", label: "My Skills", icon: Sparkles, description: "Track skill progress" },
   { id: "roadmap", label: "Career Roadmap", icon: TrendingUp, description: "Visualize your path" },
-  { id: "goals", label: "Goals & Milestones", icon: Target, description: "Set & track goals" },
-  { id: "achievements", label: "Achievements", icon: Trophy, description: "Earned badges" },
+  { id: "goals", label: "Personal Development", icon: Target, description: "Set & track goals" },
   { id: "coach", label: "AI Career Coach", icon: MessageSquare, highlight: true, description: "Get AI advice" },
-  { id: "growth", label: "Growth Insights", icon: BookOpen, description: "Action plans" },
-  { id: "analytics", label: "My Analytics", icon: BarChart3, description: "Performance data" },
 ];
 
 const quickLinks = [
@@ -39,10 +37,8 @@ export function DashboardSidebar({ activeTab, onTabChange }: DashboardSidebarPro
       {/* Logo */}
       <div className="p-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2 overflow-hidden">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
-            <Flame className="w-4 h-4 text-primary-foreground" />
-          </div>
-          {!collapsed && <span className="font-display font-bold text-lg whitespace-nowrap">CareerPath</span>}
+          <img src={logoImg} alt="Leverify" className="h-8 w-auto shrink-0" />
+          {!collapsed && <span className="font-display font-bold text-lg whitespace-nowrap">Leverify CareerPro</span>}
         </div>
         <button onClick={() => setCollapsed(!collapsed)} className="w-7 h-7 rounded-lg hover:bg-muted/50 flex items-center justify-center text-muted-foreground shrink-0">
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

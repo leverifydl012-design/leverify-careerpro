@@ -66,8 +66,14 @@ export const proficiencyDefinitions = {
 export const careerTracks: CareerTrack[] = [
   {
     id: "ic",
-    name: "Individual Contributor",
-    description: "Technical excellence and domain expertise path",
+    name: "Individual Contributor (Business)",
+    description: "Technical excellence and domain expertise – Business Teams",
+    levels: [1, 2, 3, 4]
+  },
+  {
+    id: "ic-enablement",
+    name: "Individual Contributor (Enablement)",
+    description: "Technical excellence and domain expertise – Enablement Teams",
     levels: [1, 2, 3, 4]
   },
   {
@@ -86,7 +92,7 @@ export const careerTracks: CareerTrack[] = [
     id: "group-manager",
     name: "Group Manager",
     description: "Strategic leadership across multiple teams",
-    levels: [5]
+    levels: [5, 6]
   }
 ];
 
@@ -94,38 +100,45 @@ export const careerTracks: CareerTrack[] = [
 export const progressionLevels: ProgressionLevel[] = [
   {
     level: 1,
-    name: "Level 1 - Foundation",
+    name: "Level 1",
     description: "Building core skills and understanding fundamentals",
-    availableIn: ["IC"],
+    availableIn: ["IC", "IC Enablement"],
     requiredProficiency: "Standard proficiency across all skill areas"
   },
   {
     level: 2,
-    name: "Level 2 - Developing",
+    name: "Level 2",
     description: "Growing expertise and taking on more responsibility",
-    availableIn: ["IC"],
-    requiredProficiency: "Effective proficiency in most skill areas"
+    availableIn: ["IC", "IC Enablement"],
+    requiredProficiency: "Effective proficiency in key skill areas"
   },
   {
     level: 3,
-    name: "Level 3 - Skilled",
+    name: "Level 3",
     description: "Demonstrating advanced capabilities and mentoring others",
-    availableIn: ["IC", "Department Lead"],
-    requiredProficiency: "Advanced proficiency in key skill areas"
+    availableIn: ["IC", "IC Enablement", "Department Lead"],
+    requiredProficiency: "Advanced/Effective proficiency depending on track"
   },
   {
     level: 4,
-    name: "Level 4 - Expert",
+    name: "Level 4",
     description: "Leading initiatives and driving organizational impact",
-    availableIn: ["IC", "Department Lead", "Manager"],
-    requiredProficiency: "Expert proficiency in multiple skill areas"
+    availableIn: ["IC", "IC Enablement", "Department Lead", "Manager"],
+    requiredProficiency: "Expert/Advanced proficiency depending on track"
   },
   {
     level: 5,
-    name: "Level 5 - Strategic Leader",
+    name: "Level 5",
     description: "Shaping company direction and building high-performing teams",
     availableIn: ["Manager", "Group Manager"],
-    requiredProficiency: "Mastery across all skill areas"
+    requiredProficiency: "Advanced to expert proficiency across all areas"
+  },
+  {
+    level: 6,
+    name: "Level 6",
+    description: "Executive-level mastery and organizational stewardship",
+    availableIn: ["Group Manager"],
+    requiredProficiency: "Expert proficiency across all skill areas"
   }
 ];
 
@@ -138,7 +151,7 @@ export const skills: Skill[] = [
     levels: {
       standard: {
         name: "Standard",
-        description: "Foundation level understanding",
+        description: "Standard level understanding",
         skills: [
           "Basic understanding of domain-specific concepts and terminology",
           "Ability to apply foundational knowledge in controlled, simple tasks",
@@ -181,7 +194,7 @@ export const skills: Skill[] = [
     levels: {
       standard: {
         name: "Standard",
-        description: "Foundation level understanding",
+        description: "Standard level understanding",
         skills: [
           "Understanding of basic communication principles and concepts",
           "Ability to convey ideas clearly with basic empathy",
@@ -224,7 +237,7 @@ export const skills: Skill[] = [
     levels: {
       standard: {
         name: "Standard",
-        description: "Foundation level understanding",
+        description: "Standard level understanding",
         skills: [
           "Understanding of fundamental planning concepts and terminology",
           "Ability to follow instructions and contribute to basic planning tasks",
@@ -267,7 +280,7 @@ export const skills: Skill[] = [
     levels: {
       standard: {
         name: "Standard",
-        description: "Foundation level understanding",
+        description: "Standard level understanding",
         skills: [
           "Understanding of basic principles of impact and effectiveness",
           "Ability to identify opportunities for positive impact in one's role",
@@ -310,7 +323,7 @@ export const skills: Skill[] = [
     levels: {
       standard: {
         name: "Standard",
-        description: "Foundation level understanding",
+        description: "Standard level understanding",
         skills: [
           "Understanding of basic problem-solving principles and concepts",
           "Ability to identify problems and propose simple solutions",
@@ -353,7 +366,7 @@ export const skills: Skill[] = [
     levels: {
       standard: {
         name: "Standard",
-        description: "Foundation level understanding",
+        description: "Standard level understanding",
         skills: [
           "Understanding of basic ethical principles and organizational values",
           "Ability to recognize ethical dilemmas and seek guidance when needed",
@@ -396,7 +409,7 @@ export const skills: Skill[] = [
     levels: {
       standard: {
         name: "Standard",
-        description: "Foundation level understanding",
+        description: "Standard level understanding",
         skills: [
           "Familiarity with fundamental leadership concepts",
           "Ability for continuous learning and self-development",
@@ -435,35 +448,251 @@ export const skills: Skill[] = [
   }
 ];
 
-// Get skills required for a specific level
-export function getSkillsForLevel(level: number): { skill: Skill; requiredLevel: string }[] {
-  const levelMapping: { [key: number]: keyof Skill["levels"] } = {
-    1: "standard",
-    2: "effective",
-    3: "effective",
-    4: "advanced",
-    5: "expert"
-  };
+type RequiredSkill = { skillName: string; requiredLevel: keyof Skill["levels"] };
 
-  const requiredLevel = levelMapping[level] || "standard";
-  
-  return skills.map(skill => ({
-    skill,
-    requiredLevel
-  }));
+/**
+ * Exact skill requirements per career track per level,
+ * sourced directly from the Career Progression Definitions sheet.
+ *
+ * Skills order: Domain Knowledge | Communication | Planning |
+ *               Impactability | Solution Oriented | Company Culture | Leadership
+ */
+export const trackLevelRequiredSkills: Record<string, Record<number, RequiredSkill[]>> = {
+  // ── Business Teams – Individual Contributor ──────────────────────────────
+  ic: {
+    1: [
+      { skillName: "Domain Knowledge",  requiredLevel: "standard"  },
+      { skillName: "Communication",     requiredLevel: "standard"  },
+      { skillName: "Planning",          requiredLevel: "standard"  },
+      { skillName: "Impactability",     requiredLevel: "standard"  },
+      { skillName: "Solution Oriented", requiredLevel: "standard"  },
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "standard"  },
+    ],
+    2: [
+      { skillName: "Domain Knowledge",  requiredLevel: "effective" },
+      { skillName: "Communication",     requiredLevel: "effective" },
+      { skillName: "Planning",          requiredLevel: "standard"  },
+      { skillName: "Impactability",     requiredLevel: "standard"  },
+      { skillName: "Solution Oriented", requiredLevel: "effective" },
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "standard"  },
+    ],
+    3: [
+      { skillName: "Domain Knowledge",  requiredLevel: "advanced"  },
+      { skillName: "Communication",     requiredLevel: "effective" },
+      { skillName: "Planning",          requiredLevel: "effective" },
+      { skillName: "Impactability",     requiredLevel: "effective" },
+      { skillName: "Solution Oriented", requiredLevel: "effective" },
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "standard"  },
+    ],
+    4: [
+      { skillName: "Domain Knowledge",  requiredLevel: "expert"    },
+      { skillName: "Communication",     requiredLevel: "advanced"  },
+      { skillName: "Planning",          requiredLevel: "effective" },
+      { skillName: "Impactability",     requiredLevel: "advanced"  },
+      { skillName: "Solution Oriented", requiredLevel: "effective" },
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "effective" },
+    ],
+  },
+
+  // ── Enablement Teams – Individual Contributor ────────────────────────────
+  "ic-enablement": {
+    1: [
+      { skillName: "Domain Knowledge",  requiredLevel: "standard"  },
+      { skillName: "Communication",     requiredLevel: "standard"  },
+      { skillName: "Planning",          requiredLevel: "standard"  },
+      { skillName: "Impactability",     requiredLevel: "standard"  },
+      { skillName: "Solution Oriented", requiredLevel: "standard"  },
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "standard"  },
+    ],
+    2: [
+      { skillName: "Domain Knowledge",  requiredLevel: "effective" },
+      { skillName: "Communication",     requiredLevel: "effective" },
+      { skillName: "Planning",          requiredLevel: "standard"  },
+      { skillName: "Impactability",     requiredLevel: "effective" }, // differs from Business IC
+      { skillName: "Solution Oriented", requiredLevel: "standard"  }, // differs from Business IC
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "standard"  },
+    ],
+    3: [
+      { skillName: "Domain Knowledge",  requiredLevel: "advanced"  },
+      { skillName: "Communication",     requiredLevel: "effective" },
+      { skillName: "Planning",          requiredLevel: "effective" },
+      { skillName: "Impactability",     requiredLevel: "effective" },
+      { skillName: "Solution Oriented", requiredLevel: "effective" },
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "standard"  },
+    ],
+    4: [
+      { skillName: "Domain Knowledge",  requiredLevel: "expert"    },
+      { skillName: "Communication",     requiredLevel: "advanced"  },
+      { skillName: "Planning",          requiredLevel: "effective" },
+      { skillName: "Impactability",     requiredLevel: "effective" }, // differs from Business IC (Advanced → Effective)
+      { skillName: "Solution Oriented", requiredLevel: "effective" },
+      { skillName: "Company Culture",   requiredLevel: "standard"  },
+      { skillName: "Leadership",        requiredLevel: "effective" },
+    ],
+  },
+
+  // ── Department Lead (same for Business & Enablement) ─────────────────────
+  "dept-lead": {
+    3: [
+      { skillName: "Domain Knowledge",  requiredLevel: "effective" },
+      { skillName: "Communication",     requiredLevel: "effective" },
+      { skillName: "Planning",          requiredLevel: "effective" },
+      { skillName: "Impactability",     requiredLevel: "effective" },
+      { skillName: "Solution Oriented", requiredLevel: "effective" },
+      { skillName: "Company Culture",   requiredLevel: "effective" },
+      { skillName: "Leadership",        requiredLevel: "effective" },
+    ],
+    4: [
+      { skillName: "Domain Knowledge",  requiredLevel: "advanced"  },
+      { skillName: "Communication",     requiredLevel: "advanced"  },
+      { skillName: "Planning",          requiredLevel: "effective" },
+      { skillName: "Impactability",     requiredLevel: "effective" },
+      { skillName: "Solution Oriented", requiredLevel: "advanced"  },
+      { skillName: "Company Culture",   requiredLevel: "effective" },
+      { skillName: "Leadership",        requiredLevel: "effective" },
+    ],
+  },
+
+  // ── Manager (same for Business & Enablement) ─────────────────────────────
+  manager: {
+    4: [
+      { skillName: "Domain Knowledge",  requiredLevel: "effective" },
+      { skillName: "Communication",     requiredLevel: "advanced"  },
+      { skillName: "Planning",          requiredLevel: "effective" },
+      { skillName: "Impactability",     requiredLevel: "effective" },
+      { skillName: "Solution Oriented", requiredLevel: "effective" },
+      { skillName: "Company Culture",   requiredLevel: "advanced"  },
+      { skillName: "Leadership",        requiredLevel: "effective" },
+    ],
+    5: [
+      { skillName: "Domain Knowledge",  requiredLevel: "effective" },
+      { skillName: "Communication",     requiredLevel: "advanced"  },
+      { skillName: "Planning",          requiredLevel: "advanced"  },
+      { skillName: "Impactability",     requiredLevel: "advanced"  },
+      { skillName: "Solution Oriented", requiredLevel: "advanced"  },
+      { skillName: "Company Culture",   requiredLevel: "advanced"  },
+      { skillName: "Leadership",        requiredLevel: "advanced"  },
+    ],
+  },
+
+  // ── Group Manager ─────────────────────────────────────────────────────────
+  "group-manager": {
+    5: [
+      { skillName: "Domain Knowledge",  requiredLevel: "advanced"  },
+      { skillName: "Communication",     requiredLevel: "advanced"  },
+      { skillName: "Planning",          requiredLevel: "advanced"  },
+      { skillName: "Impactability",     requiredLevel: "expert"    },
+      { skillName: "Solution Oriented", requiredLevel: "expert"    },
+      { skillName: "Company Culture",   requiredLevel: "advanced"  },
+      { skillName: "Leadership",        requiredLevel: "advanced"  },
+    ],
+    6: [
+      { skillName: "Domain Knowledge",  requiredLevel: "advanced"  },
+      { skillName: "Communication",     requiredLevel: "expert"    },
+      { skillName: "Planning",          requiredLevel: "expert"    },
+      { skillName: "Impactability",     requiredLevel: "expert"    },
+      { skillName: "Solution Oriented", requiredLevel: "expert"    },
+      { skillName: "Company Culture",   requiredLevel: "expert"    },
+      { skillName: "Leadership",        requiredLevel: "expert"    },
+    ],
+  },
+};
+
+/** Backward-compat alias – defaults to Business IC track */
+export const levelRequiredSkills: Record<number, RequiredSkill[]> =
+  trackLevelRequiredSkills["ic"] as Record<number, RequiredSkill[]>;
+
+/**
+ * Return the required-skills list for a given track + level.
+ * Falls back in order:
+ *   1. Requested track + level
+ *   2. IC track + level (backward-compat)
+ *   3. Any track that has data for the level (handles levels 5/6 which only
+ *      exist in manager / group-manager tracks)
+ */
+export function getTrackLevelSkills(careerTrack: string, level: number): RequiredSkill[] {
+  const trackData = trackLevelRequiredSkills[careerTrack];
+  if (trackData?.[level]) return trackData[level];
+
+  if (trackLevelRequiredSkills["ic"]?.[level]) return trackLevelRequiredSkills["ic"][level];
+
+  // Canonical fallback order for higher levels
+  const fallbackOrder = ["manager", "group-manager", "dept-lead", "ic-enablement"];
+  for (const t of fallbackOrder) {
+    if (trackLevelRequiredSkills[t]?.[level]) return trackLevelRequiredSkills[t][level];
+  }
+  return [];
 }
 
-// Get the difference between two levels
-export function getLevelProgression(currentLevel: number, targetLevel: number) {
-  const currentSkills = getSkillsForLevel(currentLevel);
-  const targetSkills = getSkillsForLevel(targetLevel);
-  
+/** Return the valid levels for a career track */
+export function getTrackLevels(careerTrack: string): number[] {
+  const track = careerTracks.find(t => t.id === careerTrack);
+  return track?.levels || [1, 2, 3, 4];
+}
+
+// Get skills required for a specific level (track-aware)
+export function getSkillsForLevel(
+  level: number,
+  careerTrack = "ic"
+): { skill: Skill; requiredLevel: string }[] {
+  const requirements = getTrackLevelSkills(careerTrack, level);
+  return requirements.map(req => ({
+    skill: skills.find(s => s.name === req.skillName)!,
+    requiredLevel: req.requiredLevel
+  })).filter(r => r.skill != null);
+}
+
+// Get skills that need to be upgraded when moving from currentLevel to targetLevel (track-aware)
+export function getUpgradeRequirements(
+  currentLevel: number,
+  targetLevel: number,
+  careerTrack = "ic"
+): {
+  skillName: string;
+  skill: Skill;
+  fromLevel: keyof Skill["levels"];
+  toLevel: keyof Skill["levels"];
+  needsUpgrade: boolean;
+}[] {
+  const currentReqs = getTrackLevelSkills(careerTrack, currentLevel);
+  const targetReqs  = getTrackLevelSkills(careerTrack, targetLevel);
+
+  return targetReqs.map(targetReq => {
+    const currentReq = currentReqs.find(r => r.skillName === targetReq.skillName);
+    const skillData  = skills.find(s => s.name === targetReq.skillName)!;
+    const fromLevel  = (currentReq?.requiredLevel ?? "standard") as keyof Skill["levels"];
+    const needsUpgrade = fromLevel !== targetReq.requiredLevel;
+    return {
+      skillName: targetReq.skillName,
+      skill: skillData,
+      fromLevel,
+      toLevel: targetReq.requiredLevel,
+      needsUpgrade,
+    };
+  }).filter(r => r.skill != null);
+}
+
+// Get the difference between two levels (track-aware)
+export function getLevelProgression(
+  currentLevel: number,
+  targetLevel: number,
+  careerTrack = "ic"
+) {
+  const currentSkills = getSkillsForLevel(currentLevel, careerTrack);
+  const targetSkills  = getSkillsForLevel(targetLevel, careerTrack);
+
   return {
     current: currentSkills,
     target: targetSkills,
-    improvements: skills.map(skill => {
-      const currentReq = currentSkills.find(s => s.skill.name === skill.name)?.requiredLevel;
-      const targetReq = targetSkills.find(s => s.skill.name === skill.name)?.requiredLevel;
+    improvements: targetSkills.map(({ skill, requiredLevel: targetReq }) => {
+      const currentReq = currentSkills.find(s => s.skill.name === skill.name)?.requiredLevel ?? "standard";
       return {
         skill: skill.name,
         from: currentReq,
@@ -510,10 +739,29 @@ ${skill.levels.advanced.skills.map(s => `- ${s}`).join("\n")}
 **Expert Level Requirements:**
 ${skill.levels.expert.skills.map(s => `- ${s}`).join("\n")}`).join("\n\n")}
 
-## Level-to-Skill Mapping
-- Level 1: Standard proficiency across all skills
-- Level 2: Effective proficiency in most skill areas
-- Level 3: Effective to Advanced proficiency
-- Level 4: Advanced proficiency in key areas
-- Level 5: Expert proficiency across all areas
+## Level-to-Skill Mapping (from Career Progression Definitions sheet)
+
+### Individual Contributor – Business Teams
+- Level 1: All skills Standard
+- Level 2: Domain Knowledge(Effective), Communication(Effective), Solution Oriented(Effective); rest Standard
+- Level 3: Domain Knowledge(Advanced), Communication/Planning/Impactability/Solution Oriented(Effective); rest Standard
+- Level 4: Domain Knowledge(Expert), Communication(Advanced), Impactability(Advanced), Planning/Solution Oriented/Leadership(Effective); Company Culture Standard
+
+### Individual Contributor – Enablement Teams
+- Level 1: All skills Standard
+- Level 2: Domain Knowledge/Communication/Impactability(Effective); rest Standard
+- Level 3: Domain Knowledge(Advanced), Communication/Planning/Impactability/Solution Oriented(Effective); rest Standard
+- Level 4: Domain Knowledge(Expert), Communication(Advanced), Planning/Impactability/Solution Oriented/Leadership(Effective); Company Culture Standard
+
+### Department Lead
+- Level 3: All 7 skills Effective
+- Level 4: Domain Knowledge/Communication/Solution Oriented(Advanced); Planning/Impactability/Company Culture/Leadership(Effective)
+
+### Manager
+- Level 4: Communication/Company Culture(Advanced); rest Effective
+- Level 5: Communication/Planning/Impactability/Solution Oriented/Company Culture/Leadership(Advanced); Domain Knowledge Effective
+
+### Group Manager
+- Level 5: Impactability/Solution Oriented(Expert); rest Advanced
+- Level 6: Communication/Planning/Impactability/Solution Oriented/Company Culture/Leadership(Expert); Domain Knowledge Advanced
 `;

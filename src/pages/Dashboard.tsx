@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { progressionLevels, skills, careerTracks } from '@/data/careerData';
+import { progressionLevels, skills, careerTracks, getTrackLevelSkills, getTrackLevels } from '@/data/careerData';
 import ProgressionTimeline from '@/components/ProgressionTimeline';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { AICareerCoach } from '@/components/dashboard/AICareerCoach';
@@ -119,12 +119,21 @@ export default function Dashboard() {
 
   const currentLevelData = progressionLevels.find(l => l.level === (profile?.current_level || 1));
   const targetLevelData = progressionLevels.find(l => l.level === (profile?.target_level || 2));
+  const targetLvl = profile?.target_level || 2;
+  const careerTrack = profile?.career_track || 'ic';
+  const requiredSkillsForTarget = getTrackLevelSkills(careerTrack, targetLvl);
   const completedSkills = userSkills.filter(s => s.status === 'completed').map(s => s.skill_id);
   const inProgressSkills = userSkills.filter(s => s.status === 'in_progress').map(s => s.skill_id);
-  const completedSkillsCount = completedSkills.length;
-  const inProgressSkillsCount = inProgressSkills.length;
+  const completedSkillsCount = requiredSkillsForTarget.filter(req =>
+    userSkills.some(s => s.skill_id === req.skillName && s.level === targetLvl && s.status === 'completed')
+  ).length;
+  const inProgressSkillsCount = requiredSkillsForTarget.filter(req =>
+    userSkills.some(s => s.skill_id === req.skillName && s.level === targetLvl && s.status === 'in_progress')
+  ).length;
   const activeGoalsCount = userGoals.filter(g => g.status === 'active').length;
-  const overallProgress = skills.length > 0 ? Math.round((completedSkillsCount / skills.length) * 100) : 0;
+  const overallProgress = requiredSkillsForTarget.length > 0
+    ? Math.round((completedSkillsCount / requiredSkillsForTarget.length) * 100)
+    : 0;
 
   const coachContext = {
     currentLevel: profile?.current_level || 1,
@@ -161,31 +170,18 @@ export default function Dashboard() {
               targetLevel={profile?.target_level || 2}
               userSkills={userSkills}
               totalSkillsPerLevel={skills.length}
+              careerTrack={profile?.career_track || 'ic'}
             />
           </motion.div>
         );
       case 'goals':
         return <EnhancedGoalsTab userId={user?.id || ''} coachContext={coachContext} />;
-      case 'achievements':
-        return <AchievementsTab achievements={achievements} />;
       case 'coach':
         return (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass rounded-3xl overflow-hidden h-[calc(100vh-120px)]">
             <AICareerCoach context={coachContext} />
           </motion.div>
         );
-      case 'growth':
-        return (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass rounded-3xl p-6">
-            <h2 className="text-xl font-display font-bold mb-6 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              Growth Insights & Action Plan
-            </h2>
-            <GrowthInsights {...coachContext} />
-          </motion.div>
-        );
-      case 'analytics':
-        return <AnalyticsTab coachContext={coachContext} userSkills={userSkills} userGoals={userGoals} achievements={achievements} />;
       default:
         return null;
     }
@@ -207,11 +203,13 @@ export default function Dashboard() {
                 <Menu className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="font-display font-bold text-lg capitalize">{activeTab === 'coach' ? 'AI Career Coach' : activeTab.replace('-', ' ')}</h1>
+                <h1 className="font-display font-bold text-lg capitalize">
+                {activeTab === 'coach' ? 'AI Career Coach' : activeTab === 'goals' ? 'Personal Development' : activeTab.replace('-', ' ')}
+              </h1>
                 <p className="text-xs text-muted-foreground hidden sm:block">
                   {activeTab === 'overview' ? 'Your career at a glance' : 
                    activeTab === 'skills' ? 'Track and update your skill progress' :
-                   activeTab === 'analytics' ? 'Deep dive into your performance data' :
+                   activeTab === 'goals' ? 'Manage your personal development' :
                    'Manage your career growth'}
                 </p>
               </div>
@@ -231,15 +229,21 @@ export default function Dashboard() {
           </div>
           {/* Mobile Tab Bar */}
           <div className="lg:hidden overflow-x-auto flex gap-1 px-4 pb-2">
-            {['overview','skills','roadmap','goals','achievements','coach','growth','analytics'].map(tab => (
+            {[
+              { id: 'overview', label: 'Overview' },
+              { id: 'skills', label: 'My Skills' },
+              { id: 'roadmap', label: 'Career Roadmap' },
+              { id: 'goals', label: 'Personal Development' },
+              { id: 'coach', label: '🤖 AI Coach' },
+            ].map(tab => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-                  activeTab === tab ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground'
+                  activeTab === tab.id ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground'
                 }`}
               >
-                {tab === 'coach' ? '🤖 AI Coach' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -421,9 +425,15 @@ function OverviewTab({ profile, user, currentLevelData, targetLevelData, complet
 /* ========== SKILLS TAB ========== */
 function SkillsTab({ profile, userSkills, handleUpdateSkillStatus }: any) {
   const targetLevel = profile?.target_level || 2;
-  const completedCount = userSkills.filter((s: any) => s.status === 'completed' && s.level === targetLevel).length;
-  const inProgressCount = userSkills.filter((s: any) => s.status === 'in_progress' && s.level === targetLevel).length;
-  const progress = Math.round((completedCount / skills.length) * 100);
+  const careerTrack = profile?.career_track || 'ic';
+  const requiredSkills = getTrackLevelSkills(careerTrack, targetLevel);
+  const completedCount = requiredSkills.filter((req: any) =>
+    userSkills.some((s: any) => s.skill_id === req.skillName && s.level === targetLevel && s.status === 'completed')
+  ).length;
+  const inProgressCount = requiredSkills.filter((req: any) =>
+    userSkills.some((s: any) => s.skill_id === req.skillName && s.level === targetLevel && s.status === 'in_progress')
+  ).length;
+  const progress = requiredSkills.length > 0 ? Math.round((completedCount / requiredSkills.length) * 100) : 0;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
@@ -438,7 +448,7 @@ function SkillsTab({ profile, userSkills, handleUpdateSkillStatus }: any) {
           <p className="text-xs text-muted-foreground">In Progress</p>
         </div>
         <div className="glass rounded-2xl p-4 text-center">
-          <p className="text-2xl font-display font-bold">{skills.length - completedCount - inProgressCount}</p>
+          <p className="text-2xl font-display font-bold">{requiredSkills.length - completedCount - inProgressCount}</p>
           <p className="text-xs text-muted-foreground">Not Started</p>
         </div>
       </div>
@@ -446,20 +456,26 @@ function SkillsTab({ profile, userSkills, handleUpdateSkillStatus }: any) {
       {/* Progress */}
       <div className="glass rounded-2xl p-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium">Level {targetLevel} Skill Mastery</span>
+          <span className="text-sm font-medium">Level {targetLevel} Required Skills</span>
           <span className="text-sm text-primary font-bold">{progress}%</span>
         </div>
         <Progress value={progress} className="h-2.5 bg-muted" />
+        <p className="text-xs text-muted-foreground mt-1">{completedCount} of {requiredSkills.length} required skills completed</p>
       </div>
 
       {/* Skills list */}
       <div className="glass rounded-3xl p-6">
-        <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+        <h2 className="text-xl font-display font-bold mb-1 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" />
-          Skills for Level {targetLevel}
+          Required Skills for Level {targetLevel}
         </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Complete these {requiredSkills.length} skills to progress to Level {targetLevel}
+        </p>
         <div className="space-y-3">
-          {skills.map(skill => {
+          {requiredSkills.map((req: any) => {
+            const skill = skills.find(s => s.name === req.skillName);
+            if (!skill) return null;
             const userSkill = userSkills.find((s: any) => s.skill_id === skill.name && s.level === targetLevel);
             const status = userSkill?.status || 'not_started';
             return (
@@ -473,6 +489,9 @@ function SkillsTab({ profile, userSkills, handleUpdateSkillStatus }: any) {
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold">{skill.name}</h3>
                       {status === 'completed' && <CheckCircle2 className="w-4 h-4 text-accent" />}
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground capitalize">
+                        {req.requiredLevel}
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">{skill.description}</p>
                   </div>
@@ -544,14 +563,18 @@ function AnalyticsTab({ coachContext, userSkills, userGoals, achievements }: any
   const completedGoals = userGoals.filter((g: any) => g.status === 'completed').length;
   const totalGoals = userGoals.length;
   const goalCompletionRate = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
-  const completedSkillsForLevel = userSkills.filter((s: any) => s.status === 'completed').length;
-  const skillProgress = skills.length > 0 ? Math.round((completedSkillsForLevel / skills.length) * 100) : 0;
+  const targetLvl = coachContext.targetLevel || 2;
+  const requiredForTarget = getTrackLevelSkills(coachContext.careerTrack || 'ic', targetLvl);
+  const completedSkillsForLevel = requiredForTarget.filter((req: any) =>
+    userSkills.some((s: any) => s.skill_id === req.skillName && s.level === targetLvl && s.status === 'completed')
+  ).length;
+  const skillProgress = requiredForTarget.length > 0 ? Math.round((completedSkillsForLevel / requiredForTarget.length) * 100) : 0;
 
   const metrics = [
     { label: 'Skill Completion', value: skillProgress, max: 100, unit: '%', color: 'bg-primary' },
     { label: 'Goal Completion', value: goalCompletionRate, max: 100, unit: '%', color: 'bg-accent' },
     { label: 'Achievements', value: achievements.length, max: 20, unit: '', color: 'bg-yellow-400' },
-    { label: 'Active Focus Areas', value: coachContext.inProgressSkills.length, max: skills.length, unit: `/${skills.length}`, color: 'bg-secondary' },
+    { label: 'Active Focus Areas', value: coachContext.inProgressSkills.length, max: requiredForTarget.length || skills.length, unit: `/${requiredForTarget.length || skills.length}`, color: 'bg-secondary' },
   ];
 
   return (
@@ -635,18 +658,54 @@ function AnalyticsTab({ coachContext, userSkills, userGoals, achievements }: any
 
 /* ========== PROFILE EDITOR ========== */
 function ProfileEditor({ profile, onSave, onCancel }: { profile: any; onSave: (c: number, t: number, tr: string) => void; onCancel: () => void }) {
-  const [currentLevel, setCurrentLevel] = useState(profile?.current_level || 1);
-  const [targetLevel, setTargetLevel] = useState(profile?.target_level || 2);
   const [careerTrack, setCareerTrack] = useState(profile?.career_track || 'ic');
+  const validLevels = getTrackLevels(careerTrack);
+  const [currentLevel, setCurrentLevel] = useState(
+    validLevels.includes(profile?.current_level) ? profile.current_level : validLevels[0]
+  );
+  const [targetLevel, setTargetLevel] = useState(
+    validLevels.includes(profile?.target_level) && profile.target_level > currentLevel
+      ? profile.target_level
+      : Math.min(currentLevel + 1, validLevels[validLevels.length - 1])
+  );
+
+  const handleTrackChange = (newTrack: string) => {
+    setCareerTrack(newTrack);
+    const levels = getTrackLevels(newTrack);
+    const newCurrent = levels[0];
+    setCurrentLevel(newCurrent);
+    setTargetLevel(levels[1] ?? levels[0]);
+  };
+
+  const handleCurrentChange = (v: string) => {
+    const newCurrent = Number(v);
+    setCurrentLevel(newCurrent);
+    if (targetLevel <= newCurrent) {
+      const levels = getTrackLevels(careerTrack);
+      const next = levels.find(l => l > newCurrent);
+      if (next) setTargetLevel(next);
+    }
+  };
 
   return (
     <div className="space-y-4">
       <div>
-        <Label>Current Level</Label>
-        <Select value={String(currentLevel)} onValueChange={(v) => setCurrentLevel(Number(v))}>
+        <Label>Career Track</Label>
+        <Select value={careerTrack} onValueChange={handleTrackChange}>
           <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {progressionLevels.map(level => (
+            {careerTracks.map(track => (
+              <SelectItem key={track.id} value={track.id}>{track.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <Label>Current Level</Label>
+        <Select value={String(currentLevel)} onValueChange={handleCurrentChange}>
+          <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            {progressionLevels.filter(l => validLevels.includes(l.level)).map(level => (
               <SelectItem key={level.level} value={String(level.level)}>{level.name}</SelectItem>
             ))}
           </SelectContent>
@@ -657,19 +716,8 @@ function ProfileEditor({ profile, onSave, onCancel }: { profile: any; onSave: (c
         <Select value={String(targetLevel)} onValueChange={(v) => setTargetLevel(Number(v))}>
           <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {progressionLevels.filter(l => l.level > currentLevel).map(level => (
+            {progressionLevels.filter(l => validLevels.includes(l.level) && l.level > currentLevel).map(level => (
               <SelectItem key={level.level} value={String(level.level)}>{level.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <Label>Career Track</Label>
-        <Select value={careerTrack} onValueChange={setCareerTrack}>
-          <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            {careerTracks.map(track => (
-              <SelectItem key={track.id} value={track.id}>{track.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>

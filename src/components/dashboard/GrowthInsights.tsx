@@ -3,7 +3,7 @@ import {
   TrendingUp, BookOpen, Users, Presentation, Code, 
   Brain, Handshake, Star, ArrowRight 
 } from "lucide-react";
-import { progressionLevels, skills, getSkillsForLevel } from "@/data/careerData";
+import { progressionLevels, skills, getTrackLevelSkills } from "@/data/careerData";
 
 interface GrowthInsightsProps {
   currentLevel: number;
@@ -66,16 +66,19 @@ const growthStrategies: Record<string, { icon: any; title: string; actions: stri
 };
 
 export function GrowthInsights({ currentLevel, targetLevel, careerTrack, completedSkills, inProgressSkills }: GrowthInsightsProps) {
-  const gapSkills = skills
-    .map(s => s.name)
+  const requiredSkills = getTrackLevelSkills(careerTrack, targetLevel);
+  const requiredSkillNames = requiredSkills.map(r => r.skillName);
+
+  const gapSkills = requiredSkillNames
     .filter(name => !completedSkills.includes(name) && !inProgressSkills.includes(name));
 
-  const prioritySkills = gapSkills.length > 0 ? gapSkills.slice(0, 3) : skills.map(s => s.name).slice(0, 3);
+  const prioritySkills = gapSkills.length > 0 ? gapSkills.slice(0, 3) : requiredSkillNames.slice(0, 3);
   const currentLevelData = progressionLevels.find(l => l.level === currentLevel);
   const targetLevelData = progressionLevels.find(l => l.level === targetLevel);
 
-  const progressPercent = completedSkills.length > 0 
-    ? Math.round((completedSkills.length / (skills.length)) * 100) 
+  const completedRequired = requiredSkillNames.filter(n => completedSkills.includes(n)).length;
+  const progressPercent = requiredSkills.length > 0
+    ? Math.round((completedRequired / requiredSkills.length) * 100)
     : 0;
 
   return (
@@ -103,7 +106,7 @@ export function GrowthInsights({ currentLevel, targetLevel, careerTrack, complet
             {currentLevelData?.name} → {targetLevelData?.name}
           </h4>
           <p className="text-sm text-muted-foreground">
-            {completedSkills.length} of {skills.length} target skills completed
+            {completedRequired} of {requiredSkills.length} required skills completed
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             Track: {careerTrack === 'ic' ? 'Individual Contributor' : careerTrack === 'dept-lead' ? 'Department Lead' : careerTrack === 'manager' ? 'Manager' : 'Group Manager'}

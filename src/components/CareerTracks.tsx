@@ -1,16 +1,18 @@
 import { motion } from "framer-motion";
 import { careerTracks } from "@/data/careerData";
-import { Users, User, Briefcase, Building2, ArrowRight } from "lucide-react";
+import { Users, User, Briefcase, Building2, ArrowRight, Layers } from "lucide-react";
 
-const trackIcons = {
+const trackIcons: Record<string, React.ElementType> = {
   "ic": User,
+  "ic-enablement": Layers,
   "dept-lead": Briefcase,
   "manager": Users,
   "group-manager": Building2,
 };
 
-const trackGradients = {
+const trackGradients: Record<string, string> = {
   "ic": "from-level-1 to-level-2",
+  "ic-enablement": "from-level-1 to-level-3",
   "dept-lead": "from-level-2 to-level-3",
   "manager": "from-level-4 to-level-5",
   "group-manager": "from-secondary to-primary",
@@ -33,7 +35,7 @@ export function CareerTracks() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
             <ArrowRight className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">Career Paths</span>
+            <span className="text-sm font-medium text-muted-foreground">Career Progression</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
             Choose Your <span className="gradient-text">Track</span>
@@ -46,8 +48,8 @@ export function CareerTracks() {
         {/* Track Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {careerTracks.map((track, index) => {
-            const Icon = trackIcons[track.id as keyof typeof trackIcons];
-            const gradient = trackGradients[track.id as keyof typeof trackGradients];
+            const Icon = trackIcons[track.id] ?? User;
+            const gradient = trackGradients[track.id] ?? "from-level-1 to-level-2";
 
             return (
               <motion.div

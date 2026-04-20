@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowDown, Sparkles, Rocket, Target } from "lucide-react";
+import { ArrowDown, Sparkles, Rocket, Target, Layers, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-career-ladder.jpg";
 
@@ -75,18 +75,28 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mb-12"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-12"
           >
             {[
-              { icon: Target, value: "5", label: "Levels" },
-              { icon: Rocket, value: "4", label: "Career Tracks" },
-              { icon: Sparkles, value: "7", label: "Core Skills" },
+              { icon: TrendingUp, value: "6", label: "Career Levels", sub: "Level 1 → Level 6", color: "text-primary" },
+              { icon: Rocket, value: "5", label: "Career Tracks", sub: "IC · Lead · Manager", color: "text-secondary" },
+              { icon: Sparkles, value: "7", label: "Core Skills", sub: "Assessed per level", color: "text-accent" },
+              { icon: Layers, value: "4", label: "Skill Tiers", sub: "Standard → Expert", color: "text-primary" },
             ].map((stat, index) => (
-              <div key={index} className="glass rounded-2xl p-6 text-center">
-                <stat.icon className="w-6 h-6 text-primary mx-auto mb-2" />
-                <div className="text-3xl font-display font-bold gradient-text">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </div>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + index * 0.08 }}
+                className="glass rounded-2xl p-5 text-center flex flex-col items-center gap-1 border border-white/10 hover:border-primary/30 transition-colors"
+              >
+                <div className={`w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center mb-1`}>
+                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                </div>
+                <div className={`text-3xl font-display font-bold gradient-text`}>{stat.value}</div>
+                <div className="text-sm font-semibold text-foreground">{stat.label}</div>
+                <div className="text-[11px] text-muted-foreground">{stat.sub}</div>
+              </motion.div>
             ))}
           </motion.div>
 
