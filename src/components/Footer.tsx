@@ -1,4 +1,3 @@
-import { Heart } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 
 export function Footer() {
@@ -25,10 +24,6 @@ export function Footer() {
             </a>
           </div>
 
-          {/* Copyright */}
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
-            Made with <Heart className="w-4 h-4 text-destructive fill-destructive" /> for career growth
-          </p>
         </div>
       </div>
     </footer>
