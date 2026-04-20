@@ -8,7 +8,7 @@ import logoImg from "@/assets/logo.png";
 
 const navItems = [
   { label: "Levels", href: "#levels" },
-  { label: "Tracks", href: "#tracks" },
+  { label: "Roles", href: "#tracks" },
   { label: "Skills", href: "#skills" },
 ];
 

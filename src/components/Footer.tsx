@@ -17,7 +17,7 @@ export function Footer() {
               Levels
             </a>
             <a href="#tracks" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Tracks
+              Roles
             </a>
             <a href="#skills" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Skills
