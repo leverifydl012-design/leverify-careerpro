@@ -115,7 +115,7 @@ export function SkillsShowcase() {
                               {skill.levels[level].name}
                             </h4>
                             <ul className="space-y-1">
-                              {skill.levels[level].skills.slice(0, 2).map((s, idx) => (
+                              {skill.levels[level].skills.slice(0, 3).map((s, idx) => (
                                 <li key={idx} className="text-xs text-muted-foreground">
                                   • {s}
                                 </li>
