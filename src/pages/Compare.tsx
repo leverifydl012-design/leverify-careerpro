@@ -235,7 +235,6 @@ export default function Compare() {
             <h3 className="text-xl font-display font-bold mb-2">Ready to start your journey?</h3>
             <p className="text-muted-foreground mb-6">Create an account to track your progress and set goals.</p>
             <div className="flex gap-4 justify-center">
-              <Button variant="outline" onClick={() => navigate('/quiz')}>Take Assessment</Button>
               <Button onClick={() => navigate('/auth')} className="glow-primary">Get Started</Button>
             </div>
           </div>

@@ -397,7 +397,6 @@ function OverviewTab({ profile, user, currentLevelData, targetLevelData, complet
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Compare Levels', icon: BarChart3, action: () => navigate('/compare'), color: 'text-primary' },
-            { label: 'Take Assessment', icon: Brain, action: () => navigate('/quiz'), color: 'text-secondary' },
             { label: 'Ask AI Coach', icon: Sparkles, action: () => {}, color: 'text-accent' },
             { label: 'View Roadmap', icon: TrendingUp, action: () => {}, color: 'text-primary' },
           ].map((item, idx) => (

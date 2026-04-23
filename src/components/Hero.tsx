@@ -115,13 +115,6 @@ export function Hero() {
               <ArrowDown className="w-5 h-5 animate-bounce" />
             </button>
             <Link
-              to="/quiz"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full glass border border-white/20 font-semibold hover:bg-white/10 transition-colors"
-            >
-              <Sparkles className="w-5 h-5 text-primary" />
-              Take Assessment
-            </Link>
-            <Link
               to="/compare"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full glass border border-white/20 font-semibold hover:bg-white/10 transition-colors"
             >

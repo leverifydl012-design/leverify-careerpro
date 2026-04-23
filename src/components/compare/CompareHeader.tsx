@@ -15,7 +15,6 @@ export default function CompareHeader() {
         </button>
         <div className="flex items-center gap-4">
           <Button variant="ghost" onClick={() => navigate('/')}>Home</Button>
-          <Button variant="ghost" onClick={() => navigate('/quiz')}>Take Quiz</Button>
           <Button variant="outline" onClick={() => navigate('/auth')}>Sign In</Button>
         </div>
       </div>

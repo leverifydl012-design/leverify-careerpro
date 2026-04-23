@@ -45,9 +45,6 @@ export function Navigation() {
             <Link to="/compare" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Compare
             </Link>
-            <Link to="/quiz" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Quiz
-            </Link>
           </div>
 
           {/* Auth Buttons */}
@@ -109,13 +106,6 @@ export function Navigation() {
               className="block py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Compare Levels
-            </Link>
-            <Link
-              to="/quiz"
-              onClick={() => setIsOpen(false)}
-              className="block py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Self Assessment
             </Link>
             <div className="pt-4 mt-4 border-t border-border">
               {user ? (

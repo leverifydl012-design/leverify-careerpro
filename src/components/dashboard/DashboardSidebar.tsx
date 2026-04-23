@@ -1,6 +1,6 @@
 import { 
   LayoutDashboard, Target, Sparkles, TrendingUp,
-  MessageSquare, LogOut, Home, GitCompare, HelpCircle,
+  MessageSquare, LogOut, Home, GitCompare,
   ChevronLeft, ChevronRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,6 @@ const menuItems = [
 const quickLinks = [
   { label: "Home", icon: Home, path: "/" },
   { label: "Compare Levels", icon: GitCompare, path: "/compare" },
-  { label: "Self Assessment", icon: HelpCircle, path: "/quiz" },
 ];
 
 export function DashboardSidebar({ activeTab, onTabChange }: DashboardSidebarProps) {
