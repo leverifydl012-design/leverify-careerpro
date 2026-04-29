@@ -18,6 +18,7 @@ interface CoachContext {
   targetLevel: number;
   careerTrack: string;
   careerRoleName?: string;
+  designation?: string | null;
   completedSkills: string[];
   inProgressSkills: string[];
   activeGoals: string[];

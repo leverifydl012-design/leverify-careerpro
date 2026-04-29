@@ -19,6 +19,7 @@ IMPORTANT DATA RULES:
 CAREER PROGRESSION:
 - Job Levels run from Level 1 to Level 6.
 - The user's role/track matters (IC, IC Enablement, Department Lead, Manager, Group Manager). Always tailor examples and actions to the user's role.
+- If the user provides a designation/job title, tailor wording to match that designation (tools, responsibilities, stakeholders, scope).
 
 7 CORE SKILLS: Domain Knowledge, Communication, Planning, Impactability, Solution Oriented, Company Culture, Leadership
 
@@ -55,6 +56,7 @@ serve(async (req) => {
 - Current Level: ${context.currentLevel || 'Unknown'}
 - Target Level: ${context.targetLevel || 'Unknown'}
 - Role/Track: ${context.careerRoleName || context.careerTrack || 'Unknown'}
+- Designation: ${context.designation || 'Not provided'}
 - Completed Skills: ${context.completedSkills?.join(', ') || 'None yet'}
 - In-Progress Skills: ${context.inProgressSkills?.join(', ') || 'None yet'}
 - Active Goals: ${context.activeGoals?.join(', ') || 'None set'}

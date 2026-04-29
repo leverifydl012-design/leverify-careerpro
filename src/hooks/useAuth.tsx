@@ -6,6 +6,7 @@ interface Profile {
   id: string;
   user_id: string;
   full_name: string | null;
+  designation?: string | null;
   current_level: number;
   target_level: number | null;
   career_track: string;

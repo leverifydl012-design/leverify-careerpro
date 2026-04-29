@@ -80,8 +80,18 @@ export default function Dashboard() {
     if (achievementsRes.data) setAchievements(achievementsRes.data as Achievement[]);
   };
 
-  const handleUpdateProfile = async (currentLevel: number, targetLevel: number, careerTrack: string) => {
-    const { error } = await updateProfile({ current_level: currentLevel, target_level: targetLevel, career_track: careerTrack });
+  const handleUpdateProfile = async (
+    currentLevel: number,
+    targetLevel: number,
+    careerTrack: string,
+    designation: string | null
+  ) => {
+    const { error } = await updateProfile({
+      current_level: currentLevel,
+      target_level: targetLevel,
+      career_track: careerTrack,
+      designation,
+    });
     if (error) {
       toast({ title: 'Error', description: 'Failed to update profile', variant: 'destructive' });
     } else {
@@ -154,6 +164,7 @@ export default function Dashboard() {
     targetLevel: profile?.target_level || 2,
     careerTrack: profile?.career_track || 'ic',
     careerRoleName,
+    designation: profile?.designation || null,
     completedSkills,
     inProgressSkills,
     activeGoals: userGoals.filter(g => g.status === 'active').map(g => g.title),
@@ -672,9 +683,18 @@ function AnalyticsTab({ coachContext, userSkills, userGoals, achievements }: any
 }
 
 /* ========== PROFILE EDITOR ========== */
-function ProfileEditor({ profile, onSave, onCancel }: { profile: any; onSave: (c: number, t: number, tr: string) => void; onCancel: () => void }) {
+function ProfileEditor({
+  profile,
+  onSave,
+  onCancel,
+}: {
+  profile: any;
+  onSave: (c: number, t: number, tr: string, designation: string | null) => void;
+  onCancel: () => void;
+}) {
   const [careerTrack, setCareerTrack] = useState(profile?.career_track || 'ic');
   const validLevels = getTrackLevels(careerTrack);
+  const [designation, setDesignation] = useState<string>(profile?.designation || '');
   const [currentLevel, setCurrentLevel] = useState(
     validLevels.includes(profile?.current_level) ? profile.current_level : validLevels[0]
   );
@@ -704,6 +724,18 @@ function ProfileEditor({ profile, onSave, onCancel }: { profile: any; onSave: (c
 
   return (
     <div className="space-y-4">
+      <div>
+        <Label>Designation</Label>
+        <Input
+          value={designation}
+          onChange={(e) => setDesignation(e.target.value)}
+          placeholder="e.g., Senior Analyst, Product Manager, Team Lead"
+          className="bg-background/50"
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          Used by the AI Coach to tailor language and examples to your job title.
+        </p>
+      </div>
       <div>
         <Label>Career Track</Label>
         <Select value={careerTrack} onValueChange={handleTrackChange}>
@@ -739,7 +771,19 @@ function ProfileEditor({ profile, onSave, onCancel }: { profile: any; onSave: (c
       </div>
       <div className="flex gap-2">
         <Button variant="outline" onClick={onCancel} className="flex-1">Cancel</Button>
-        <Button onClick={() => onSave(currentLevel, targetLevel, careerTrack)} className="flex-1">Save</Button>
+        <Button
+          onClick={() =>
+            onSave(
+              currentLevel,
+              targetLevel,
+              careerTrack,
+              designation.trim() ? designation.trim() : null
+            )
+          }
+          className="flex-1"
+        >
+          Save
+        </Button>
       </div>
     </div>
   );

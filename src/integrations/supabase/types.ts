@@ -108,6 +108,7 @@ export type Database = {
           career_track: string | null
           created_at: string
           current_level: number | null
+          designation: string | null
           full_name: string | null
           id: string
           target_level: number | null
@@ -118,6 +119,7 @@ export type Database = {
           career_track?: string | null
           created_at?: string
           current_level?: number | null
+          designation?: string | null
           full_name?: string | null
           id?: string
           target_level?: number | null
@@ -128,6 +130,7 @@ export type Database = {
           career_track?: string | null
           created_at?: string
           current_level?: number | null
+          designation?: string | null
           full_name?: string | null
           id?: string
           target_level?: number | null
