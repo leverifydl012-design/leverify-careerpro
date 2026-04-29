@@ -17,9 +17,16 @@ interface CoachContext {
   currentLevel: number;
   targetLevel: number;
   careerTrack: string;
+  careerRoleName?: string;
   completedSkills: string[];
   inProgressSkills: string[];
   activeGoals: string[];
+  progressionRequirements?: Array<{
+    skillName: string;
+    requiredLevel: string;
+    status: "not_started" | "in_progress" | "completed";
+    necessaryRequirements: string[];
+  }>;
 }
 
 const COACH_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/career-coach`;

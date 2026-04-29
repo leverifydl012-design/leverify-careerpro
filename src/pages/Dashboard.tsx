@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { progressionLevels, skills, careerTracks, getTrackLevelSkills, getTrackLevels } from '@/data/careerData';
+import { progressionLevels, skills, careerTracks, getNecessaryRequirements, getTrackLevelSkills, getTrackLevels } from '@/data/careerData';
 import ProgressionTimeline from '@/components/ProgressionTimeline';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { AICareerCoach } from '@/components/dashboard/AICareerCoach';
@@ -135,13 +135,29 @@ export default function Dashboard() {
     ? Math.round((completedSkillsCount / requiredSkillsForTarget.length) * 100)
     : 0;
 
+  const careerRoleName =
+    careerTracks.find(t => t.id === (profile?.career_track || 'ic'))?.name || 'Individual Contributor (Business)';
+
+  const progressionRequirements = requiredSkillsForTarget.map(req => {
+    const status =
+      userSkills.find(s => s.skill_id === req.skillName && s.level === targetLvl)?.status || 'not_started';
+    return {
+      skillName: req.skillName,
+      requiredLevel: req.requiredLevel,
+      status,
+      necessaryRequirements: getNecessaryRequirements(req.skillName, req.requiredLevel),
+    };
+  });
+
   const coachContext = {
     currentLevel: profile?.current_level || 1,
     targetLevel: profile?.target_level || 2,
     careerTrack: profile?.career_track || 'ic',
+    careerRoleName,
     completedSkills,
     inProgressSkills,
     activeGoals: userGoals.filter(g => g.status === 'active').map(g => g.title),
+    progressionRequirements,
   };
 
   const renderContent = () => {

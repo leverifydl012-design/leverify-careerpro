@@ -5,14 +5,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const coachSystemPrompt = `You are an expert Career Growth Coach. You give PRACTICAL, ACTIONABLE advice with REAL-WORLD EXAMPLES to help employees grow to their next career level.
+const coachSystemPrompt = `You are an expert Career Growth Coach. You give PRACTICAL, ACTIONABLE advice with REAL-WORLD EXAMPLES to help employees grow to their next job level.
 
-CAREER FRAMEWORK:
-- Level 1 (Foundation): Building core skills - IC track
-- Level 2 (Developing): Growing expertise - IC track  
-- Level 3 (Skilled): Advanced capabilities, mentoring - IC or Dept Lead
-- Level 4 (Expert): Leading initiatives, org impact - IC, Dept Lead, or Manager
-- Level 5 (Strategic Leader): Shaping company direction - Manager or Group Manager
+IMPORTANT DATA RULES:
+- The user context will include a structured list called "progressionRequirements".
+- Each item contains:
+  - skillName
+  - requiredLevel (standard|effective|advanced|expert)
+  - status (not_started|in_progress|completed)
+  - necessaryRequirements (the official "Necessary requirements to progress to the next level" bullets from the Excel sheet)
+- You MUST base your guidance primarily on these "necessaryRequirements" bullets when suggesting what to do next.
+
+CAREER PROGRESSION:
+- Job Levels run from Level 1 to Level 6.
+- The user's role/track matters (IC, IC Enablement, Department Lead, Manager, Group Manager). Always tailor examples and actions to the user's role.
 
 7 CORE SKILLS: Domain Knowledge, Communication, Planning, Impactability, Solution Oriented, Company Culture, Leadership
 
@@ -27,7 +33,7 @@ RULES FOR YOUR RESPONSES:
 8. Format responses with clear headers, bullet points, and numbered steps
 9. Always end with a "Quick Win" - something they can do in the next 30 minutes
 
-When given user context (current level, target level, skills status), personalize advice deeply.`;
+When given user context (role, current level, target level, progressionRequirements), personalize advice deeply and reference the exact required skills and their necessaryRequirements.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -48,12 +54,20 @@ serve(async (req) => {
       contextualPrompt += `\n\nUSER CONTEXT:
 - Current Level: ${context.currentLevel || 'Unknown'}
 - Target Level: ${context.targetLevel || 'Unknown'}
-- Career Track: ${context.careerTrack || 'Unknown'}
+- Role/Track: ${context.careerRoleName || context.careerTrack || 'Unknown'}
 - Completed Skills: ${context.completedSkills?.join(', ') || 'None yet'}
 - In-Progress Skills: ${context.inProgressSkills?.join(', ') || 'None yet'}
 - Active Goals: ${context.activeGoals?.join(', ') || 'None set'}
 
-Use this context to give HIGHLY PERSONALIZED advice. Reference their specific skills and gaps.`;
+PROGRESSION REQUIREMENTS (authoritative):
+${Array.isArray(context.progressionRequirements) && context.progressionRequirements.length
+  ? context.progressionRequirements.map((r: any) => {
+      const nec = Array.isArray(r.necessaryRequirements) ? r.necessaryRequirements : [];
+      return `- ${r.skillName} → required: ${r.requiredLevel} | status: ${r.status}\n  Necessary requirements:\n${nec.map((x: string) => `  - ${x}`).join("\n")}`;
+    }).join("\n")
+  : "- (none provided)"}
+
+Use this context to give HIGHLY PERSONALIZED advice. Start by identifying the 2-3 biggest gaps (not_started/in_progress) and turn the necessaryRequirements into concrete weekly actions and examples for their role.`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

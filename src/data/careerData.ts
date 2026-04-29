@@ -448,6 +448,177 @@ export const skills: Skill[] = [
   }
 ];
 
+/**
+ * "Necessary requirements to progress to the next level" (from the Excel sheet).
+ * These are the coachable, action-oriented behaviors per skill & proficiency.
+ */
+export const necessaryRequirementsBySkill: Record<
+  string,
+  Record<keyof Skill["levels"], string[]>
+> = {
+  "Domain Knowledge": {
+    standard: [
+      "Actively engage in learning opportunities within the domain, such as workshops and courses.",
+      "Apply basic domain knowledge to a wider range of tasks with some variability.",
+      "Seek feedback from peers and supervisors on domain-related work.",
+    ],
+    effective: [
+      "Demonstrate effective problem-solving in complex domain-specific challenges.",
+      "Take initiative in collaborative projects, leading technical discussions or components.",
+      "Mentor peers in applying domain knowledge to enhance project outcomes.",
+    ],
+    advanced: [
+      "Demonstrate effective problem-solving in complex domain-specific challenges.",
+      "Take initiative in collaborative projects, leading technical discussions or components.",
+      "Mentor peers in applying domain knowledge to enhance project outcomes.",
+    ],
+    expert: [
+      "Continuously scan the horizon for emerging trends and technologies in the domain.",
+      "Lead cross-functional teams in applying domain knowledge to strategic business initiatives.",
+      "Develop and champion new methodologies or best practices to elevate organizational expertise.",
+    ],
+  },
+  "Communication": {
+    standard: [
+      "Participate in communication activities under supervision.",
+      "Practice active listening and empathy in communication.",
+      "Seek feedback on communication style and incorporate improvements.",
+    ],
+    effective: [
+      "Successfully engage in emotionally intelligent communication independently.",
+      "Demonstrate leadership in fostering empathetic communication within teams.",
+      "Mentor peers in developing emotionally intelligent communication skills.",
+    ],
+    advanced: [
+      "Lead initiatives to embed emotionally intelligent communication in organizational culture.",
+      "Drive communication strategies that foster collaboration and innovation.",
+      "Mentor leaders in advanced communication and conflict resolution techniques.",
+    ],
+    expert: [
+      "Lead communication initiatives at an organizational or industry level.",
+      "Develop and implement innovative communication approaches.",
+      "Influence industry standards and best practices in communication and emotional intelligence.",
+    ],
+  },
+  "Planning": {
+    standard: [
+      "Participate in planning activities under supervision.",
+      "Demonstrate proficiency in basic planning tasks.",
+      "Seek opportunities to learn more about planning tools and methodologies.",
+    ],
+    effective: [
+      "Successfully execute plans for complex tasks or projects.",
+      "Demonstrate adaptability in planning approach to meet changing requirements.",
+      "Mentor peers in effective planning and time management techniques.",
+    ],
+    advanced: [
+      "Lead strategic planning initiatives, involving cross-functional teams.",
+      "Drive process improvements in planning methodologies.",
+      "Mentor others in advanced planning and risk management practices.",
+    ],
+    expert: [
+      "Lead strategic planning efforts at an organizational or industry level.",
+      "Develop and implement innovative planning approaches.",
+      "Influence industry standards and best practices in strategic planning and execution.",
+    ],
+  },
+  "Impactability": {
+    standard: [
+      "Participate in impact-related activities under supervision.",
+      "Begin to implement strategies for creating a positive impact on work tasks.",
+      "Seek feedback on impactability and incorporate improvements.",
+    ],
+    effective: [
+      "Successfully create positive impact independently across various work domains.",
+      "Demonstrate leadership in fostering a culture of impact within teams.",
+      "Mentor peers in measuring and maximizing impact in their work.",
+    ],
+    advanced: [
+      "Lead strategic initiatives to embed impactability into organizational culture.",
+      "Drive impact strategies that align with organizational goals and values.",
+      "Mentor leaders in advanced impact measurement and strategy development.",
+    ],
+    expert: [
+      "Lead impact-related initiatives at an organizational or industry level.",
+      "Develop and implement innovative impact approaches that drive sustainable change.",
+      "Influence industry standards and best practices in impactability and social innovation.",
+    ],
+  },
+  "Solution Oriented": {
+    standard: [
+      "Engage in problem-solving activities under supervision.",
+      "Begin to apply solution-oriented thinking to work tasks and challenges.",
+      "Seek feedback on problem-solving approach and incorporate improvements.",
+    ],
+    effective: [
+      "Successfully implement solutions to complex problems independently.",
+      "Demonstrate leadership in fostering a culture of solution-oriented thinking within teams.",
+      "Mentor peers in effective problem-solving and solution implementation.",
+    ],
+    advanced: [
+      "Lead strategic initiatives to embed a solution-oriented mindset into organizational culture.",
+      "Drive solution strategies that align with organizational goals and values.",
+      "Mentor leaders in advanced solution development and innovation practices.",
+    ],
+    expert: [
+      "Lead solution-oriented initiatives at an organizational or industry level.",
+      "Develop and implement innovative solution approaches that drive sustainable change.",
+      "Influence industry standards and best practices in solution-oriented thinking and innovation.",
+    ],
+  },
+  "Company Culture": {
+    standard: [
+      "Engage in ethical decision-making activities under supervision.",
+      "Begin to apply ethical principles to work tasks and interactions.",
+      "Seek opportunities to learn more about organizational ethics and values.",
+    ],
+    effective: [
+      "Successfully navigates complex ethical situations independently.",
+      "Demonstrate leadership in fostering a culture of ethics adherence within teams.",
+      "Mentor or support peers in making ethical decisions and actions.",
+    ],
+    advanced: [
+      "Lead strategic initiatives to embed a culture of ethics adherence into organizational DNA.",
+      "Drive ethics strategies that align with organizational goals and values.",
+      "Mentor others in advanced ethical decision-making and risk management.",
+    ],
+    expert: [
+      "Lead ethics-related initiatives at an organizational or industry level.",
+      "Develop and implement innovative approaches to promote ethics and integrity.",
+      "Influence industry standards and best practices in ethics adherence and integrity.",
+    ],
+  },
+  "Leadership": {
+    standard: [
+      "Engage in leadership training opportunities.",
+      "Demonstrate leadership principles in supervised settings.",
+      "Seek feedback on leadership approach and apply learnings.",
+    ],
+    effective: [
+      "Drive diverse teams or projects successfully.",
+      "Exhibit adaptability in leadership style to meet team needs.",
+      "Mentor or support peers in their leadership development.",
+    ],
+    advanced: [
+      "Develop and implement strategies for team and organizational improvement.",
+      "Act as a mentor to emerging leaders, sharing insights and experiences.",
+      "Contribute to thought leadership through internal or external channels.",
+    ],
+    expert: [
+      "Continuously engage in advanced leadership development programs.",
+      "Lead cross-functional teams in strategic initiatives.",
+      "Influence the leadership development agenda at an organizational or industry level.",
+    ],
+  },
+};
+
+export function getNecessaryRequirements(
+  skillName: string,
+  requiredLevel: keyof Skill["levels"]
+): string[] {
+  return necessaryRequirementsBySkill[skillName]?.[requiredLevel] || [];
+}
+
 type RequiredSkill = { skillName: string; requiredLevel: keyof Skill["levels"] };
 
 /**
